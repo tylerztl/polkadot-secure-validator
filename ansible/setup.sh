@@ -4,7 +4,7 @@ function handle_error() {
   if (( $? )) ; then
     echo -e "[\e[31mERROR\e[39m]"
     echo -e >&2 "CAUSE:\n $1"
-    exit 1 
+    exit 1
   else
     echo -e "[\e[32mOK\e[39m]"
   fi
@@ -12,12 +12,12 @@ function handle_error() {
 
 cd "$(dirname "$0")"
 
-echo "Sudo password for remote servers:"
-read -s SUDO_PW
+#echo "Sudo password for remote servers:"
+#read -s SUDO_PW
 
-echo -n ">> Pulling upstream changes... "
-out=$((git pull origin master) 2>&1)
-handle_error "$out"
+#echo -n ">> Pulling upstream changes... "
+#out=$((git pull origin master) 2>&1)
+#handle_error "$out"
 
 echo -n ">> Testing Ansible availability... "
 out=$((ansible --version) 2>&1)
@@ -35,11 +35,11 @@ else
 fi
 
 echo -n ">> Testing connectivity to hosts... "
-out=$((ansible all -i inventory.yml -m ping --become --extra-vars "ansible_become_pass='$SUDO_PW'") 2>&1)
+out=$((ansible all -i inventory.yml -m ping --become) 2>&1)
 handle_error "$out"
 
 echo ">> Executing Ansible Playbook..."
 
-ansible-playbook -i inventory.yml main.yml --become --extra-vars "ansible_become_pass='$SUDO_PW'"
+ansible-playbook -i inventory.yml main.yml --become
 
 echo ">> Done!"

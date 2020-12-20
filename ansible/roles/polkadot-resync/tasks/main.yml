@@ -1,19 +1,23 @@
-- name: stop polkadot service
+- name: stop {{ chain }} service
   systemd:
-    name: polkadot.service
+    name: "{{ chain }}-{{ hostvars[inventory_hostname].name }}.service"
     state: stopped
 
 - name: purge chain
   shell: |
     set -o pipefail
-    /usr/local/bin/polkadot purge-chain -y
+    /usr/local/bin/polkadot purge-chain -y \
+    --chain={{ chain }} \
+    {% if hostvars[inventory_hostname].base_path is defined and hostvars[inventory_hostname].base_path|length %}
+    --base-path '{{ hostvars[inventory_hostname].base_path }}/{{ chain }}/{{ hostvars[inventory_hostname].name }}' \
+    {% endif %}
   become: yes
-  become_user: polkadot
+#  become_user: polkadot
   args:
     executable: /bin/bash
   changed_when: False
 
-- name: start polkadot service
+- name: start {{ chain }} service
   systemd:
-    name: polkadot.service
+    name: "{{ chain }}-{{ hostvars[inventory_hostname].name }}.service"
     state: started

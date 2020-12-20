@@ -1,4 +1,4 @@
-- name: restart polkadot service
+- name: restart {{ chain }} service
   systemd:
-    name: polkadot.service
+    name: "{{ chain }}-{{ hostvars[inventory_hostname].name }}.service"
     state: restarted

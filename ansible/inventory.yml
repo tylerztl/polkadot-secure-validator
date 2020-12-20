@@ -1,0 +1,68 @@
+# Specify the nodes to setup. You can add more or remove entries, as you wish.
+
+
+# ## Validator 0
+[validator-0]
+8.136.150.244
+
+[validator-0:vars]
+ansible_user=root
+
+# Preferably use a private telemetry server
+telemetryUrl=wss://telemetry.polkadot.io/submit/
+loggingFilter='info,runtime=debug'
+base_path=/mnt/disk1/workspace
+name=charlie
+p2p_port=30335
+rpc_port=9935
+ws_port=9946
+
+
+# ## Group all nodes
+[validator:children]
+validator-0
+
+
+# ## Common variables
+[all:vars]
+# The name for how each node should be prefixed for the telemetry name
+project=patractlabs
+
+# Can be left as is.
+ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ConnectTimeout=15'
+build_dir=$HOME/.config/polkadot-secure-validator/build/w3f/ansible
+
+# Specify which `polkadot` binary to install. Checksum is verified during execution.
+polkadot_binary_url='https://github.com/paritytech/polkadot/releases/download/v0.8.26-1/polkadot'
+polkadot_binary_checksum='sha256:edd811ccd884e5997493b346d1e8f660414193e0fd55e8fdfc59c8f967644ce6'
+
+# Specify the chain/network.
+#
+# For Polkadot:
+# ```
+# chain=polkadot
+# polkadot_network_id=polkadot
+# ```
+#
+# For Kusama:
+# ```
+# chain=kusama
+# polkadot_network_id=ksmcc3
+# ```
+polkadot_network_id=ksmcc3
+chain=kusama
+
+# Node exporter settings. Disabled by default.
+node_exporter_enabled='false'
+node_exporter_user='node_exporter_user'
+node_exporter_password='node_exporter_password'
+node_exporter_binary_url='https://github.com/prometheus/node_exporter/releases/download/v0.18.1/node_exporter-0.18.1.linux-amd64.tar.gz'
+node_exporter_binary_checksum='sha256:b2503fd932f85f4e5baf161268854bf5d22001869b84f00fd2d1f57b51b72424'
+
+# Polkadot service restart settings. Enabled to restart every hour.
+polkadot_restart_enabled='true'
+polkadot_restart_minute='0'
+polkadot_restart_hour='*'
+polkadot_restart_day='*'
+polkadot_restart_month='*'
+polkadot_restart_weekday='*'
