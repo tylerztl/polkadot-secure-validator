@@ -19,6 +19,8 @@ ExecStart=/usr/local/bin/polkadot \
   {% endif %}
   --chain={{ chain }} \
   --pruning=archive \
+  --execution=NativeElseWasm \
+  --wasm-execution=Compiled \
   {% if hostvars[inventory_hostname].base_path is defined and hostvars[inventory_hostname].base_path|length %}
   --base-path '{{ hostvars[inventory_hostname].base_path }}/{{ chain }}/{{ hostvars[inventory_hostname].name }}' \
   {% endif %}
