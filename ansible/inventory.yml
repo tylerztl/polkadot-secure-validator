@@ -9,7 +9,7 @@
 ansible_user=root
 
 # Preferably use a private telemetry server
-telemetryUrl=wss://telemetry.polkadot.io/submit/
+telemetryUrl=wss://telemetry.patract.io
 loggingFilter='info,runtime=debug'
 base_path=/mnt/disk1/workspace
 name=charlie
