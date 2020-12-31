@@ -1,0 +1,26 @@
+- name: stop {{ chain }} service
+  systemd:
+    name: "{{ chain }}-{{ hostvars[inventory_hostname].name }}.service"
+    state: stopped
+
+- name: export blocks
+  shell: |
+    set -o pipefail
+    nohup /usr/local/bin/polkadot export-blocks \
+    --binary \
+    --chain {{ chain }} \
+    --pruning archive \
+    --from {{ from_block_number }} \
+    --to {{ to_block_number }} \
+    {% if hostvars[inventory_hostname].base_path is defined and hostvars[inventory_hostname].base_path|length %}
+    --base-path '{{ hostvars[inventory_hostname].base_path }}/{{ chain }}/{{ hostvars[inventory_hostname].name }}' \
+    -- {{ hostvars[inventory_hostname].base_path }}/{{ chain }}-export-blocks \
+    > {{ hostvars[inventory_hostname].base_path }}/{{ chain }}-export-blocks.log 2>&1 &
+    {% else %}
+    -- {{ output_dir }}/{{ chain }}-export-blocks \
+    > {{ output_dir }}/{{ chain }}-export-blocks.log 2>&1 &
+    {% endif %}
+  become: yes
+  args:
+    executable: /bin/bash
+  changed_when: False

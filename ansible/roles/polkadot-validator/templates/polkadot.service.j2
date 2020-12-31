@@ -1,9 +1,10 @@
+#jinja2:lstrip_blocks: True
 [Unit]
 Description=Kusama Validator-{{ hostvars[inventory_hostname].name }}
 
 [Service]
 ExecStart=/usr/local/bin/polkadot \
-  --name {{ project|default('project') }}-sv-validator-{{ hostvars[inventory_hostname].name }} \
+  --name {{ project|default('project') }}-{{ hostvars[inventory_hostname].name }} \
   --validator \
   --port={{ p2p_port }} \
   --rpc-port={{ rpc_port }} \
@@ -21,8 +22,14 @@ ExecStart=/usr/local/bin/polkadot \
   --pruning=archive \
   --execution=NativeElseWasm \
   --wasm-execution=Compiled \
+  --in-peers={{ in_peers }} \
+  --out-peers={{ out_peers }} \
+  --bootnodes \
+  {% for bootnode in bootnodes %}
+    {{ bootnode }} \
+  {% endfor %}
   {% if hostvars[inventory_hostname].base_path is defined and hostvars[inventory_hostname].base_path|length %}
-  --base-path '{{ hostvars[inventory_hostname].base_path }}/{{ chain }}/{{ hostvars[inventory_hostname].name }}' \
+  --base-path {{ hostvars[inventory_hostname].base_path }}/{{ chain }}/{{ hostvars[inventory_hostname].name }} \
   {% endif %}
   {% if hostvars[inventory_hostname].telemetryUrl is defined and hostvars[inventory_hostname].telemetryUrl|length %}
   --telemetry-url "{{ hostvars[inventory_hostname].telemetryUrl }}/submit 0"

@@ -1,0 +1,4 @@
+---
+# defaults file for polkadot-export-blocks
+chain: "kusama"
+input_dir: '/mnt/disk1/workspace'

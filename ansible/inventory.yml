@@ -3,7 +3,7 @@
 
 # ## Validator 0
 [validator-0]
-8.136.150.244
+127.0.0.1
 
 [validator-0:vars]
 ansible_user=root
@@ -12,10 +12,10 @@ ansible_user=root
 telemetryUrl=wss://telemetry.patract.io
 loggingFilter='info,runtime=debug'
 base_path=/mnt/disk1/workspace
-name=charlie
-p2p_port=30335
-rpc_port=9935
-ws_port=9946
+name=alice
+p2p_port=30333
+rpc_port=9933
+ws_port=9944
 
 
 # ## Group all nodes

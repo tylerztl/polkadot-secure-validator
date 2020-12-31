@@ -1,0 +1,21 @@
+- name: import blocks
+  shell: |
+    set -o pipefail
+    nohup /usr/local/bin/polkadot import-blocks \
+    --binary \
+    --chain {{ chain }} \
+    --pruning archive \
+    --execution NativeElseWasm \
+    --wasm-execution Compiled \
+    {% if hostvars[inventory_hostname].base_path is defined and hostvars[inventory_hostname].base_path|length %}
+    --base-path '{{ hostvars[inventory_hostname].base_path }}/{{ chain }}/{{ hostvars[inventory_hostname].name }}' \
+    -- {{ hostvars[inventory_hostname].base_path }}/{{ chain }}-export-blocks \
+    > {{ hostvars[inventory_hostname].base_path }}/{{ chain }}-import-blocks.log 2>&1 &
+    {% else %}
+    -- {{ input_dir }}/{{ chain }}-export-blocks \
+    > {{ input_dir }}/{{ chain }}-import-blocks.log 2>&1 &
+    {% endif %}
+  become: yes
+  args:
+    executable: /bin/bash
+  changed_when: False
